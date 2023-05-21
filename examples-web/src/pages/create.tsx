@@ -94,85 +94,86 @@ const CreateEventForm: React.FC = () => {
             <label htmlFor="title" className="block text-sm font-medium leading-4">
                 Event Name
             </label>
-            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+            <div className="flex bg-zinc-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
                 <input
                 {...register('name')}
                 required
                 type="text"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-zinc-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
                 />
             </div>
 
             <label className="block text-sm font-medium leading-4">
                 Ticket Price
             </label>
-            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
-                <span className="text-gray-500 sm:text-sm m-2">$</span>
+            <div className="flex bg-zinc-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <span className="text-zinc-500 sm:text-sm m-2">$</span>
                 <input
                 {...register('price')}
                 required
                 type="number"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-1 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-1 placeholder:text-zinc-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
                 />
             </div>
 
             <label className="block text-sm font-medium leading-4">
                 Number of Tickets
             </label>
-            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+            <div className="flex bg-zinc-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
                 <input
                 {...register('numTickets')}
                 required
                 type="number"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-zinc-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
                 />
             </div>
 
             <label htmlFor="date" className="block text-sm font-medium leading-4">
                 Date
             </label>
-            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+            <div className="flex bg-zinc-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
                 <input
                 {...register('date')}
                 required
                 type="date"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-zinc-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6 custom-calendar"
                 />
             </div>
+
 
             <label htmlFor="date" className="block text-sm font-medium leading-4">
                 Address
             </label>
-            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+            <div className="flex bg-zinc-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
                 <input
                 {...register('address')}
                 required
                 type="text"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-zinc-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
                 />
             </div>
 
             <label htmlFor="location" className="block text-sm font-medium leading-4">
                 Location
             </label>
-            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+            <div className="flex bg-zinc-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
                 <input
                 {...register('location')}
                 required
                 type="text"
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-zinc-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
                 />
             </div>
 
             <label htmlFor="description" className="block text-sm font-medium leading-4">
                 Description
             </label>
-            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+            <div className="flex bg-zinc-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
                 <textarea
                 {...register('description')}
                 required
                 rows={3}
-                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-zinc-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
                 />
             </div>
 
