@@ -54,6 +54,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const EventPage: React.FC<EventPageProps> = ({ event }) => {
     const [loading, setLoading] = useState(false);
     const [sentTxHash, setSentTxHash] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
+    const [visible, setVisible] = useState(false)
     const router = useRouter();
 
     const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
@@ -66,10 +68,42 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
         setLoading(true);
         await sendTokenToDestChain((event.price * numTickets).toString(), [receiverAddress], (txhash: string) => {
             setSentTxHash(txhash);
+
+            // Send message back to sender containing event information
+            const message = {
+                sender: receiverAddress,
+                recipient: senderAddress,
+                event: {
+                    name: event.name,
+                    date: event.date,
+                    price: event.price,
+                    numTickets: numTickets,
+                    location: event.location,
+                    address: event.address,
+                    description: event.description,
+                    imageUrl: event.imageUrl,
+                    timestamp: event.timestamp,
+                    href: event.href
+                }
+            };
+            // Send the message using your messaging service or communication channel
+            sendMessageToSender(JSON.stringify(message));
+            setMessage(JSON.stringify(message)); // Set the message state
         }).finally(() => {
             setLoading(false);
         });
     }, [event]);
+
+    // Function to send the message to the sender (update it with your own implementation)
+    const sendMessageToSender = (message: string) => {
+        console.log('Sending message to sender:', message);
+        // Implement the logic to send the message to the sender
+    };
+
+    const handleViewTicket = () => {
+        setVisible(true)
+        console.log('Transaction Hash:', sentTxHash);
+    };
 
     return (
         <div className='flex flex-col md:flex-row md:space-x-6'>
@@ -115,10 +149,52 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
                         placeholder="Enter number of tickets"
                     />
                 </div>
-                <button type="submit" disabled={loading} className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 my-4">
+                <button type="submit" disabled={loading} className="block px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 my-4">
                     {loading ? 'Processing...' : 'Buy Tickets'}
                 </button>
-                {sentTxHash && <div>Transaction hash: {sentTxHash}</div>}
+                {message && (
+                    <button
+                        onClick={handleViewTicket}
+                        className="block px-4 py-2 border-2 border-zinc-800 text-white hover:bg-indigo-900 hover:border-indigo-400 mt-4"
+                    >
+                        View Ticket
+                    </button>
+                )}
+                {
+                visible && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <div className="bg-white p-6 rounded-lg shadow-lg relative w-1/2">
+                            <button 
+                                onClick={() => setVisible(false)}
+                                className="absolute right-3 top-3 text-lg font-bold text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                            >
+                                &times;
+                            </button>
+                            <h2 className="text-2xl text-gray-800 font-bold mb-4">Ticket Confirmation</h2>
+                {message && (
+                    <div className="text-gray-600 space-y-4">
+                        <div>
+                            <span className="font-bold">From:</span> {JSON.parse(message).sender}
+                        </div>
+                        <div>
+                            <span className="font-bold">To:</span> {JSON.parse(message).recipient}
+                        </div>
+                        <div>
+                            <span className="font-bold">Event Name:</span> {JSON.parse(message).event.name}
+                        </div>
+                        <div>
+                            <span className="font-bold">Event Date:</span> {JSON.parse(message).event.date}
+                        </div>
+                        <div>
+                            <span className="font-bold">Event Location:</span> {JSON.parse(message).event.location}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
+}
+
             </form>
         </div>
     );
