@@ -7,7 +7,9 @@ export const Navbar = () => {
     const [logo, setLogo] = React.useState('/assets/tickex.svg');
     return (
         <header className="navbar bg-base-200 shadow-sm px-16">
-          <Image width={128} height={32} src={logo} alt="tickex" />
+          <Link href='/' className='cursor-pointer'>
+            <Image width={128} height={32} src={logo} alt="tickex" />
+          </Link>
           <nav className="menu menu-horizontal ml-4 flex-1">
           </nav>
           <ThemeToggle onThemeChange={(theme: string) => {

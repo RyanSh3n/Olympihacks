@@ -51,51 +51,66 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const EventPage: React.FC<EventPageProps> = ({ event }) => {
 
-    const handleSubmit = () => {
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault();  // Prevent form from refreshing the page
         console.log('submitted!')
     }
 
     return (
-        <div className='flex flex-rows'>
-            <div>
-                <img src={event.imageUrl} className='w-full' />
+        <div className='flex flex-col md:flex-row md:space-x-6'>
+            <div className="w-full md:w-1/2">
+                <img src={event.imageUrl} className='h-64 w-full object-cover md:h-96 md:w-full' />
                 <div className="mt-4 flex justify-between">
             <div>
-                <h3 className="text-m text-gray-100">
-                    <span aria-hidden="true" className="absolute inset-0" />
+                <h3 className="text-xl text-gray-100">
                     {event.name}
                 </h3>
-                <p className="mt-1 text-sm text-gray-400">{event.date}</p>
-                <p className="mt-1 text-sm text-gray-400">{event.location}</p>
+                <p className="mt-1 text-lg text-gray-400">{event.date}</p>
+                <p className="mt-1 text-lg text-gray-400">{event.location}</p>
+                <p className="mt-1 text-m text-gray-500">{event.description}</p>
             </div>
-            <p className="text-sm font-medium text-gray-100">{event.price}</p>
+            <p className="text-xl font-medium text-gray-100">${event.price}</p>
             </div>
             </div>
-            <form>
-                <h2>Buy a Ticket</h2>
+            <form onSubmit={handleSubmit} className="w-full md:w-1/2 mt-6 md:mt-0">
+                <h2 className="text-2xl font-medium  mb-4">Buy a Ticket</h2>
 
-                <label htmlFor="title" className="block text-sm font-medium leading-4">
-                    Address
-                </label>
-                <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <div className="mb-4">
+                    <label htmlFor="title" className="block text-sm font-medium leading-4 mb-2">
+                        Address
+                    </label>
                     <input
-                    required
-                    type="text"
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                        required
+                        type="text"
+                        className="block flex-1 rounded border-0 bg-gray-800 py-1.5 pl-3 placeholder:text-gray-400 shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 focus:outline-none  w-full"
+                        placeholder="Enter your address"
                     />
                 </div>
 
-                <label htmlFor="title" className="block text-sm font-medium leading-4">
-                    Password
-                </label>
-                <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <div className="mb-4">
+                    <label htmlFor="title" className="block text-sm font-medium leading-4 mb-2">
+                        Number of Tickets
+                    </label>
                     <input
-                    required
-                    type="text"
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                        required
+                        type="number"
+                        className="block flex-1 rounded border-0 bg-gray-800 py-1.5 pl-3 placeholder:text-gray-400 shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 focus:outline-none  w-full"
+                        placeholder="Enter number of tickets"
                     />
                 </div>
-                <button onClick={handleSubmit}>Buy Tickets</button>
+
+                <div className="mb-4">
+                    <label htmlFor="title" className="block text-sm font-medium leading-4 mb-2">
+                        Password
+                    </label>
+                    <input
+                        required
+                        type="password"
+                        className="block flex-1 rounded border-0 bg-gray-800 py-1.5 pl-3 placeholder:text-gray-400 shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 focus:outline-none  w-full"
+                        placeholder="Enter your password"
+                    />
+                </div>
+                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 mt-4">Buy Tickets</button>
                 
             </form>
         </div>

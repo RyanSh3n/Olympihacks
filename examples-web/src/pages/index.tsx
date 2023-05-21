@@ -27,7 +27,7 @@ const Home: NextPage = () => {
           <button onClick={handleBuyTickets} className="px-4 py-2 border-2 border-white font-bold hover:bg-gray-200 hover:text-black">BUY TICKETS</button>
         </div>
       </div>
-      <div className="w-full bg-gray-500 min-h-screen">
+      <div className="w-full min-h-screen">
         <div id="upcomingEvents" className="w-full py-10 px-4">
           <h1 className="text-xl font-medium text-left mb-5">Upcoming Events</h1>
           <EventsPage/>
