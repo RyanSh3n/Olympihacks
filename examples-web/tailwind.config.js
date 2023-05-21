@@ -5,7 +5,11 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'space-grotesk': ['Space Grotesk', 'sans-serif'],
+      }
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {
