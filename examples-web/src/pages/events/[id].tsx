@@ -55,6 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const EventPage: React.FC<EventPageProps> = ({ event }) => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+    const [sentTxHash, setSentTxHash] = useState<string | null>(null);
     const [showQRCode, setShowQRCode] = useState(false);
     const router = useRouter();
 
@@ -63,11 +64,11 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
         const formData = new FormData(e.currentTarget);
         const receiverAddress = formData.get('address') as string;
         const numTickets = formData.get('numTickets') as unknown as number;
-        const senderAddress = event.address; // Assuming 'event' is from your event object, not the form event
+        const senderAddress = event.address;
 
         setLoading(true);
-        await sendTokenToDestChain((event.price * numTickets).toString(), [receiverAddress], () => {
-            // Send message back to sender containing event information
+        await sendTokenToDestChain((event.price * numTickets).toString(), [receiverAddress], (txhash: string) => {
+            setSentTxHash(txhash);
             const message = {
                 sender: receiverAddress,
                 recipient: senderAddress,
@@ -99,6 +100,7 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
     };
 
     const handleViewTicket = () => {
+        console.log('Transaction Hash', sentTxHash);
         setShowQRCode(true);
     };
 
