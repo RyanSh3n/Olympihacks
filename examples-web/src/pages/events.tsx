@@ -50,7 +50,7 @@ const EventsPage: React.FC = () => {
           <div className="mt-4 flex justify-between">
             <div>
                 <h3 className="text-m text-gray-100">
-                    <span aria-hidden="true" className="absolute inset-0" />
+                    {/* <span aria-hidden="true" className="absolute inset-0" /> */}
                     {event.name}
                 </h3>
                 <p className="mt-1 text-sm text-gray-400">{event.date}</p>
