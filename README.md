@@ -1,3 +1,12 @@
+NOTE: RUN OUR APPLICATION THE SAME WAY YOU WOULD RUN AXELAR EXAMPLES
+https://testnet.axelarscan.io/gmp/0xe071f496d5f657a0cbb635e6a21a20cc597ec1403c16cf7c7326551525002469
+
+POSITIVE EXPERIENCE:
+As a team completely new to blockchain, we thoroughly enjoyed not only learning what blockchain is, but also the incredible possibilities and applications it has in our everyday lives. We loved diving deep into the world of interchain and learning about the value of general message passing through building a project with Axelar. We also love the passion that Stephen Fluin brought in every interation with us hackers <3
+
+NEGATIVE EXPERIENCE:
+Although we love to be challenged, interchain tech proved to be especially difficult to get a hang of. There was a very steep learning curve and we would really appreciate more beginner-friendly workshops and documentation.
+
 # Axelar cross-chain dApp examples
 
 ## Introduction
