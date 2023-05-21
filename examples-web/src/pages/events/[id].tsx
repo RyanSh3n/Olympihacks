@@ -5,6 +5,7 @@ import 'firebase/compat/firestore';
 import { sendTokenToDestChain, generateRecipientAddress } from "../../helpers";
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
+import QRCode from 'qrcode.react';
 
 interface Event {
     name: string;
@@ -53,9 +54,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const EventPage: React.FC<EventPageProps> = ({ event }) => {
     const [loading, setLoading] = useState(false);
-    const [sentTxHash, setSentTxHash] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
-    const [visible, setVisible] = useState(false)
+    const [showQRCode, setShowQRCode] = useState(false);
     const router = useRouter();
 
     const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
@@ -66,9 +66,7 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
         const senderAddress = event.address; // Assuming 'event' is from your event object, not the form event
 
         setLoading(true);
-        await sendTokenToDestChain((event.price * numTickets).toString(), [receiverAddress], (txhash: string) => {
-            setSentTxHash(txhash);
-
+        await sendTokenToDestChain((event.price * numTickets).toString(), [receiverAddress], () => {
             // Send message back to sender containing event information
             const message = {
                 sender: receiverAddress,
@@ -101,8 +99,7 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
     };
 
     const handleViewTicket = () => {
-        setVisible(true)
-        console.log('Transaction Hash:', sentTxHash);
+        setShowQRCode(true);
     };
 
     return (
@@ -132,7 +129,7 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
                         name="address"
                         required
                         type="text"
-                        className="block flex-1 rounded border-0 bg-gray-800 py-1.5 pl-3 placeholder:text-gray-400 shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 focus:outline-none  w-full"
+                        className="block flex-1 rounded border-0 bg-zinc-800 py-1.5 pl-3 placeholder:text-gray-400 shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 focus:outline-none  w-full"
                         placeholder="Enter your wallet address"
                     />
                 </div>
@@ -145,7 +142,7 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
                         required
                         name="numTickets"
                         type="number"
-                        className="block flex-1 rounded border-0 bg-gray-800 py-1.5 pl-3 placeholder:text-gray-400 shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 focus:outline-none  w-full"
+                        className="block flex-1 rounded border-0 bg-zinc-800 py-1.5 pl-3 placeholder:text-gray-400 shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 focus:outline-none  w-full"
                         placeholder="Enter number of tickets"
                     />
                 </div>
@@ -153,48 +150,44 @@ const EventPage: React.FC<EventPageProps> = ({ event }) => {
                     {loading ? 'Processing...' : 'Buy Tickets'}
                 </button>
                 {message && (
-                    <button
-                        onClick={handleViewTicket}
-                        className="block px-4 py-2 border-2 border-zinc-800 text-white hover:bg-indigo-900 hover:border-indigo-400 mt-4"
-                    >
-                        View Ticket
-                    </button>
+                    <>
+                        <button type="button" onClick={handleViewTicket} className="px-4 block py-2 border-2 border-zinc-800 text-white hover:bg-indigo-900 hover:border-indigo-400">
+                            View Ticket
+                        </button>
+                        {showQRCode && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <div className="bg-white p-12 rounded-lg shadow-lg relative w-1/2">
+                                    <button
+                                        onClick={() => setShowQRCode(false)}
+                                        className="absolute right-5 top-3 text-lg font-bold text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                                    >
+                                        &times;
+                                    </button>
+                                    <h2 className="text-2xl text-gray-900 font-bold mb-8">Your Digital Ticket</h2>
+                                    <div className='flex'>
+                                        <div className="mr-8">
+                                            <QRCode value={JSON.stringify(message)} />
+                                        </div>
+                                        <div className="text-gray-600 space-y-3">
+                                            <div>
+                                                <span className="font-bold">Event Name:</span> {event.name}
+                                            </div>
+                                            <div>
+                                                <span className="font-bold">Event Date:</span> {event.date}
+                                            </div>
+                                            <div>
+                                                <span className="font-bold">Event Location:</span> {event.location}
+                                            </div>
+                                            <div>
+                                                <span className="font-bold">Event Description:</span> {event.description}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
-                {
-                visible && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-lg shadow-lg relative w-1/2">
-                            <button 
-                                onClick={() => setVisible(false)}
-                                className="absolute right-3 top-3 text-lg font-bold text-gray-500 hover:text-gray-700 transition-colors duration-200"
-                            >
-                                &times;
-                            </button>
-                            <h2 className="text-2xl text-gray-800 font-bold mb-4">Ticket Confirmation</h2>
-                {message && (
-                    <div className="text-gray-600 space-y-4">
-                        <div>
-                            <span className="font-bold">From:</span> {JSON.parse(message).sender}
-                        </div>
-                        <div>
-                            <span className="font-bold">To:</span> {JSON.parse(message).recipient}
-                        </div>
-                        <div>
-                            <span className="font-bold">Event Name:</span> {JSON.parse(message).event.name}
-                        </div>
-                        <div>
-                            <span className="font-bold">Event Date:</span> {JSON.parse(message).event.date}
-                        </div>
-                        <div>
-                            <span className="font-bold">Event Location:</span> {JSON.parse(message).event.location}
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    )
-}
-
             </form>
         </div>
     );
