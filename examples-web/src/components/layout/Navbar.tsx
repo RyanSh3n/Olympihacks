@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { ThemeToggle } from 'components/ThemeToggle';
 
 export const Navbar = () => {
-    const [logo, setLogo] = React.useState('/assets/tickexlight.svg');
+    const [logo, setLogo] = React.useState('/assets/tickex.svg');
     return (
         <header className="navbar bg-base-200 shadow-sm px-16">
           <Image width={128} height={32} src={logo} alt="tickex" />
