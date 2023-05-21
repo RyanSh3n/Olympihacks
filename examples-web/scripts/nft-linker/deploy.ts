@@ -20,8 +20,14 @@ export async function deploy(wallet: Wallet, chainA: any, chainB: any) {
   const erc721B = await erc721FactoryB.deploy("ATestCar", "CAR");
   chainB.erc721 = erc721B.address;
 
-  const hash = "QmPGrjwCuHKLvbvcSXHLWSgsjfUVx2faV2xsN4b9VB9ogL";
+  // const hash =  await createEndpointText("hello");
+  const hash = "QmWRPytfpK4NAPyVTDbQqe6hhpFm7DMpF5dF9r3BA9vDaq"; //edit this
   const metadata = `https://ipfs.io/ipfs/${hash}`;
+  // const metadataPath = '/home/ryan.shen/Documents/hackathon/Olympihacks/examples-web/contracts/nft-linker/test.json'; // Update the path to your metadata file
+  // const metadata = JSON.parse(readFileSync(metadataPath, 'utf-8'));
+
+  console.log('Metadata:', metadata); // Print the metadata to the console
+
   await erc721A.mintWithMetadata(nftTokenId, hash, metadata)
     .then((tx: any) => tx.wait(1));
 
@@ -54,4 +60,13 @@ export async function deploy(wallet: Wallet, chainA: any, chainB: any) {
   chainB.nftLinker = nftLinkerB.address;
 
   return [chainA, chainB]
+}
+
+function createString(name: string, eventDetails: string, seatNumbers: string, price: string): string { 
+  return `${name}_${eventDetails}_${seatNumbers}_${price}`; 
+} 
+
+function parseString(input: string): Record<string, any> {
+  const [name, eventDetails, seatNumbers, price] = input.split("_"); 
+  return { name, eventDetails, seatNumbers, price }; 
 }

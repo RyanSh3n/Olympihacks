@@ -52,6 +52,9 @@ contract NftLinker is ERC721URIStorage, AxelarExecutable, Upgradable {
             require(ownerOf(tokenId) == _msgSender(), "NOT_YOUR_TOKEN");
             _sendMintedToken(tokenId, destinationChain, destinationAddress);
         } else {
+            // Check if the metadata of the token contains a specific string
+            // string memory tokenURI = IERC721Metadata(operator).tokenURI(tokenId);
+            // require(isBelowPriceCeiling(tokenURI), "PRICE_IS_ABOVE_PRICE_CEILING");
             IERC721(operator).transferFrom(
                 _msgSender(),
                 address(this),
@@ -65,6 +68,31 @@ contract NftLinker is ERC721URIStorage, AxelarExecutable, Upgradable {
             );
         }
     }
+
+    // function isBelowPriceCeiling(string memory tokenURI) internal view returns (bool) {
+    //     if (bytes(tokenURI).length > 0) {
+    //         // Split the tokenURI into its components
+    //         string[] memory components = splitString(tokenURI, "_");
+    //         // Check if the tokenURI has the correct format
+    //         if (components.length == 4) {
+    //             string memory pricingString = components[3];
+    //             // Convert the pricingString to a uint256 value
+    //             uint256 price = stringToUint(pricingString);
+    //             // Check if the price exceeds the price limit
+    //             uint256 price_limit = 100; // Set your desired price limit here
+    //             if (price > price_limit) {
+    //                 return false; // Price exceeds the limit
+    //             }
+                
+    //             // Additional checks or processing can be added here if needed
+                
+    //             // The tokenURI is valid and meets the criteria
+    //             return true;
+    //         }
+    //     }
+        
+    //     return false; // Invalid tokenURI or does not meet the criteria
+    // }
 
     //Burns and sends a token.
     function _sendMintedToken(

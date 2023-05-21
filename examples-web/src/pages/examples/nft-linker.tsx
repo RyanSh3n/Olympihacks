@@ -3,6 +3,39 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import { isTestnet } from "config/constants";
 import { sendNftToDest, sendNftBack, ownerOf, truncatedAddress } from "helpers";
+import { create } from "ipfs-http-client";
+
+const projectId = '2Q58oJpfLSPt04Rvho348AkToYJ';
+const projectSecret = '6dc2d7a687daef99b73a9fea3180adec';
+
+async function createEndpointText(message: any): Promise<string> {
+  try {
+    const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+    const ipfs = create({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+      headers: {
+        authorization: auth,
+      },
+    });
+
+    const messageBuffer = Buffer.from(message);
+    const ipfsResult = await ipfs.add(messageBuffer);
+    const ipfsHash = ipfsResult.cid.toString();
+
+    console.log('Message added to IPFS with hash:', ipfsHash);
+    return ipfsHash;
+  } catch (error) {
+    console.error('Error adding message to IPFS:', error);
+    return "ERROR";
+  }
+};
+console.log(createEndpointText(JSON.stringify({
+  "name": "0x13ee64eBFa1732AeF1328Cfc857cc26c6B5a199e_0x13ee64eBFa1732AeF1328Cfc857cc26c6B5a199e_NFT Cross-Chain Linker Demo!_details_5a_50",
+  "description": "This image is of a cool car borrowed from https://newevolutiondesigns.com/images/freebies/cool-4k-wallpaper-7.jpg.",
+  "image": "https://ipfs.io/ipfs/QmaD6pWdCh3rUzFo221rS5gLKKqievuSeyf98xGuXhKTLd"
+})));
 
 const NFTLinker: NextPage = () => {
   const [txhash, setTxhash] = useState<string>();
@@ -43,6 +76,7 @@ const NFTLinker: NextPage = () => {
     };
 
     const onSent = (owner: any) => {
+      console.log(owner);
       setOwner(owner);
       setLoading(false);
     };
