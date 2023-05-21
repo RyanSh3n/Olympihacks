@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router'
 import { db, firebase, storage } from '../firebase';
 
 type FormData = {
     name: string;
     date: string;
+    price: number;
+    numTickets: number;
     location: string;
     description: string;
     image: FileList;
@@ -13,9 +16,31 @@ type FormData = {
 const CreateEventForm: React.FC = () => {
     const { register, handleSubmit, watch } = useForm<FormData>();
     const [uploading, setUploading] = useState(false);
+    const [preview, setPreview] = useState<string | null>(null);
     const imageUpload = watch('image');
 
-    const onSubmit = handleSubmit(async ({ name, date, location, description, image }) => {
+    const router = useRouter()
+    const navigateToHome = () => {
+        router.push('/')
+    }
+
+    useEffect(() => {
+        if (!imageUpload || imageUpload.length === 0) {
+            setPreview(null);
+            return;
+        }
+
+        const file = imageUpload[0];
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setPreview(reader.result as string);
+        };
+
+        reader.readAsDataURL(file);
+    }, [imageUpload]);
+
+    const onSubmit = handleSubmit(async ({ name, price, numTickets, date, location, description, image }) => {
         if (!image[0]) return;
         setUploading(true);
 
@@ -24,12 +49,16 @@ const CreateEventForm: React.FC = () => {
         await imageRef.put(image[0]);
         const imageUrl = await imageRef.getDownloadURL();
 
-        db.collection('events').add({
+        const newEventRef = db.collection('events').doc();
+
+        await newEventRef.set({
             name,
             date,
+            price,
             location,
             description,
             imageUrl,
+            href: `/events/${newEventRef.id}`,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         })
         .then(() => {
@@ -40,32 +69,100 @@ const CreateEventForm: React.FC = () => {
             console.error('Error adding event: ', error);
             setUploading(false);
         });
+        navigateToHome()
     });
 
 
     return (
-        <form onSubmit={onSubmit} className="flex flex-col space-y-4">
-            <label className="block">
-                <span className="text-gray-700">Event Image</span>
-                <input {...register('image')} type="file" accept="image/*" required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"/>
+        <form onSubmit={onSubmit} className="flex flex-col space-y-4 w-800">
+            
+            <label className="mt-1 block text-sm font-medium leading-4 cursor-pointer bg-indigo-500 text-white px-4 py-3 rounded">
+                Select Event Image
+                <input 
+                    {...register('image')} 
+                    type="file" 
+                    accept="image/*" 
+                    required 
+                    className="hidden"
+                />
             </label>
-            <label className="block">
-                <span>Event Name</span>
-                <input {...register('name')} placeholder="Event Name" required className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"/>
+            {preview && <img src={preview} alt="Event Preview" className="mt-4 w-full h-64 object-cover"/>}
+
+
+            <label htmlFor="title" className="block text-sm font-medium leading-4">
+                Event Name
             </label>
-            <label className="block">
-                <span>Date</span>
-                <input {...register('date')} placeholder="Date" required className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"/>
+            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <input
+                {...register('name')}
+                required
+                type="text"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <label className="block text-sm font-medium leading-4">
+                Ticket Price
             </label>
-            <label className="block">
-                <span>Location</span>
-                <input {...register('location')} placeholder="Location" required className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"/>
+            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <span className="text-gray-500 sm:text-sm m-2">$</span>
+                <input
+                {...register('price')}
+                required
+                type="text"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-1 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <label className="block text-sm font-medium leading-4">
+                Number of Tickets
             </label>
-            <label className="block">
-                <span>Description</span>
-                <textarea {...register('description')} placeholder="This event is about ..." required className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"/>
+            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <input
+                {...register('numTickets')}
+                required
+                type="text"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <label htmlFor="date" className="block text-sm font-medium leading-4">
+                Date
             </label>
-            <button type="submit" disabled={uploading} className="mt-4 px-4 py-2 rounded-md bg-blue-600 text-white">{uploading ? 'Uploading...' : 'Create Event'}</button>
+            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <input
+                {...register('date')}
+                required
+                type="text"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <label htmlFor="location" className="block text-sm font-medium leading-4">
+                Location
+            </label>
+            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <input
+                {...register('location')}
+                required
+                type="text"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <label htmlFor="description" className="block text-sm font-medium leading-4">
+                Description
+            </label>
+            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <textarea
+                {...register('description')}
+                required
+                rows={3}
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <button type="submit" disabled={uploading} className="mt-4 px-4 py-2 rounded-md bg-indigo-600 text-white hover:opacity-0.7 sm:max-w-l">{uploading ? 'Uploading...' : 'Create Event'}</button>
         </form>
 
     );
