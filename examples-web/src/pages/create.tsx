@@ -9,6 +9,7 @@ type FormData = {
     price: number;
     numTickets: number;
     location: string;
+    address: string;
     description: string;
     image: FileList;
 };
@@ -40,7 +41,7 @@ const CreateEventForm: React.FC = () => {
         reader.readAsDataURL(file);
     }, [imageUpload]);
 
-    const onSubmit = handleSubmit(async ({ name, price, numTickets, date, location, description, image }) => {
+    const onSubmit = handleSubmit(async ({ name, price, numTickets, date, location, description, image, address }) => {
         if (!image[0]) return;
         setUploading(true);
 
@@ -57,6 +58,7 @@ const CreateEventForm: React.FC = () => {
             price,
             location,
             description,
+            address,
             imageUrl,
             href: `/events/${newEventRef.id}`,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -132,6 +134,18 @@ const CreateEventForm: React.FC = () => {
             <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
                 <input
                 {...register('date')}
+                required
+                type="date"
+                className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <label htmlFor="date" className="block text-sm font-medium leading-4">
+                Address
+            </label>
+            <div className="flex bg-gray-800 rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-l">
+                <input
+                {...register('address')}
                 required
                 type="text"
                 className="block flex-1 border-0 bg-transparent py-1.5 pl-3 placeholder:text-gray-400 focus:ring-0 focus:outline-none sm:text-sm sm:leading-6"
