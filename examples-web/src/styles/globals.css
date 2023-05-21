@@ -15,3 +15,9 @@ body {
 * {
   @apply font-space-grotesk;
 }
+
+.blur {
+  position: absolute;
+  z-index: 0;
+  width: 100vw;
+}

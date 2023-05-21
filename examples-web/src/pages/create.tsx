@@ -74,9 +74,9 @@ const CreateEventForm: React.FC = () => {
 
 
     return (
-        <form onSubmit={onSubmit} className="flex flex-col space-y-4 w-800">
+        <form onSubmit={onSubmit} className="flex flex-col space-y-4 px-40 mb-10">
             
-            <label className="mt-1 block text-sm font-medium leading-4 cursor-pointer bg-indigo-500 text-white px-4 py-3 rounded">
+            <label className="mt-1 block text-m font-medium leading-4 cursor-pointer border-2 border-zinc-800 text-white hover:bg-indigo-900 hover:border-indigo-400 text-m text-white px-4 py-3 rounded">
                 Select Event Image
                 <input 
                     {...register('image')} 
@@ -162,7 +162,7 @@ const CreateEventForm: React.FC = () => {
                 />
             </div>
 
-            <button type="submit" disabled={uploading} className="mt-4 px-4 py-2 rounded-md bg-indigo-600 text-white hover:opacity-0.7 sm:max-w-l">{uploading ? 'Uploading...' : 'Create Event'}</button>
+            <button type="submit" disabled={uploading} className="mt-4 px-4 py-3 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 sm:max-w-l">{uploading ? 'Uploading...' : 'Create Event'}</button>
         </form>
 
     );
